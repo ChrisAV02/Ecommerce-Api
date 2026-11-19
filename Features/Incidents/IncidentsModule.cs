@@ -1,10 +1,16 @@
+using Ecommerce_Api.Features.Incidents.Application.Services;
+using Ecommerce_Api.Features.Incidents.Application.Services.Impl;
+using Ecommerce_Api.Shared.Application.Contracts;
+
 namespace Ecommerce_Api.Features.Incidents;
 
 public static class IncidentsModule
 {
     public static IServiceCollection AddIncidentsModule(this IServiceCollection services)
     {
-        // Register this module's application and infrastructure dependencies here as they are introduced.
+        services.AddScoped<IncidentService>();
+        services.AddScoped<IIncidentService>(provider => provider.GetRequiredService<IncidentService>());
+        services.AddScoped<IPickingIncidentWriter>(provider => provider.GetRequiredService<IncidentService>());
         return services;
     }
 

@@ -1,10 +1,18 @@
+using Ecommerce_Api.Features.Payments.Application.Services;
+using Ecommerce_Api.Features.Payments.Application.Services.Impl;
+using Ecommerce_Api.Features.Payments.Infrastructure.Repositories.Impl;
+using Ecommerce_Api.Shared.Application.Contracts;
+
 namespace Ecommerce_Api.Features.Payments;
 
 public static class PaymentsModule
 {
     public static IServiceCollection AddPaymentsModule(this IServiceCollection services)
     {
-        // Register this module's application and infrastructure dependencies here as they are introduced.
+        services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<PaymentReadSource>();
+        services.AddScoped<IPaymentEvidence>(provider => provider.GetRequiredService<PaymentReadSource>());
+        services.AddScoped<IRefundEvidence>(provider => provider.GetRequiredService<PaymentReadSource>());
         return services;
     }
 

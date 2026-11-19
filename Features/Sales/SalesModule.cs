@@ -1,10 +1,19 @@
+using Ecommerce_Api.Features.Sales.Application.Services;
+using Ecommerce_Api.Features.Sales.Application.Services.Impl;
+using Ecommerce_Api.Features.Sales.Infrastructure.Repositories.Impl;
+using Ecommerce_Api.Shared.Application.Contracts;
+
 namespace Ecommerce_Api.Features.Sales;
 
 public static class SalesModule
 {
     public static IServiceCollection AddSalesModule(this IServiceCollection services)
     {
-        // Register this module's application and infrastructure dependencies here as they are introduced.
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<OrderReadSource>();
+        services.AddScoped<IOrderPaymentSource>(provider => provider.GetRequiredService<OrderReadSource>());
+        services.AddScoped<IConfirmedOrderSource>(provider => provider.GetRequiredService<OrderReadSource>());
+        services.AddScoped<IOrderCompensationSource>(provider => provider.GetRequiredService<OrderReadSource>());
         return services;
     }
 

@@ -1,6 +1,16 @@
 # Ecommerce-Api
 
-API académica de Tiendas Mass en un único proyecto .NET 10. Catalog expone únicamente `GET /api/v1/catalog/products`; los otros cinco módulos conservan sus puntos de composición.
+API académica de Tiendas Mass en un único proyecto .NET 10. Catalog expone consulta de productos, browsing por tienda y sincronización POS; los otros cinco módulos conservan sus puntos de composición.
+
+> Nota (2026-11-19): este README conserva el detalle histórico de la etapa Catalog-only. El contrato vigente se publica en `/openapi/v1.json` y la organización interna vigente está en [`docs/architecture/refactoring-report.md`](docs/architecture/refactoring-report.md).
+
+## Arquitectura
+
+El proyecto usa **Modular Monolith + Clean Architecture por módulo**. Cada módulo sigue el flujo:
+
+`Controller → Application Service → Domain Repository Interface → Infrastructure Repository Implementation → DbContext`
+
+La estructura final, la matriz de migración, los registros DI y las verificaciones ejecutadas están en el reporte de refactorización enlazado arriba.
 
 ## Flujo de la consulta
 
@@ -96,6 +106,7 @@ Todas las FK quedan dentro del esquema `catalog`; no hay referencias a otros mó
 Solo existe Ecommerce-Api.csproj; no hay un proyecto de pruebas .NET. `dotnet test` termina sin descubrir pruebas. Las verificaciones ejecutables disponibles son:
 
 ```powershell
+pwsh -NoProfile -File Scripts/Test-Architecture.ps1
 pwsh -NoProfile -File Scripts/Test-CatalogDomain.ps1 -AssemblyPath bin/Debug/net10.0/Ecommerce-Api.dll
 # Requiere API iniciada:
 pwsh -NoProfile -File Scripts/Test-CatalogContract.ps1

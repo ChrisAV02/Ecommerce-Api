@@ -1,10 +1,13 @@
+using Ecommerce_Api.Features.Billing.Application.Services;
+using Ecommerce_Api.Features.Billing.Application.Services.Impl;
+
 namespace Ecommerce_Api.Features.Billing;
 
 public static class BillingModule
 {
     public static IServiceCollection AddBillingModule(this IServiceCollection services)
     {
-        // Register this module's application and infrastructure dependencies here as they are introduced.
+        services.AddScoped<IBillingService, BillingService>();
         return services;
     }
 

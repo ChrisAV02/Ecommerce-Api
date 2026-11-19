@@ -1,7 +1,10 @@
-using Ecommerce_Api.Features.Catalog.Repositories;
-using Ecommerce_Api.Features.Catalog.Services;
-using Ecommerce_Api.Features.Catalog.Persistence;
-using Ecommerce_Api.Configurations;
+using Ecommerce_Api.Features.Catalog.Application.Contracts;
+using Ecommerce_Api.Features.Catalog.Application.Services;
+using Ecommerce_Api.Features.Catalog.Application.Services.Impl;
+using Ecommerce_Api.Features.Catalog.Domain.Repositories;
+using Ecommerce_Api.Features.Catalog.Infrastructure.Integrations;
+using Ecommerce_Api.Features.Catalog.Infrastructure.Repositories.Impl;
+using Ecommerce_Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Nodes;
 
@@ -54,6 +57,15 @@ public static class CatalogModule
             return new ProductRepository(provider.GetRequiredService<CatalogDbContext>());
         });
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICatalogBrowsingRepository, CatalogBrowsingRepository>();
+        services.AddScoped<ICatalogBrowsingService, CatalogBrowsingService>();
+        services.AddHttpClient<IPosCatalogSource, PosCatalogSource>("Catalog.PosSynchronization", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(Math.Clamp(configuration.GetValue<int?>("Pos:TimeoutSeconds") ?? 15, 1, 60));
+        });
+        services.AddScoped<ICatalogSynchronizationStore, CatalogSynchronizationRepository>();
+        services.AddScoped<ICatalogSynchronizationService, CatalogSynchronizationService>();
+        services.AddScoped<Ecommerce_Api.Shared.Application.Contracts.IOrderQuoteProvider, CatalogOrderQuoteProvider>();
         return services;
     }
 }
