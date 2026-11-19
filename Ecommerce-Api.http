@@ -1,0 +1,12 @@
+@Ecommerce_Api_HostAddress = http://localhost:5272
+
+GET {{Ecommerce_Api_HostAddress}}/health
+Accept: application/json
+
+### Consulta principal para Apidog (Development Demo o PostgreSQL)
+GET {{Ecommerce_Api_HostAddress}}/api/v1/catalog/products?page=1&pageSize=10
+Accept: application/json
+
+### Contrato OpenAPI (Development)
+GET {{Ecommerce_Api_HostAddress}}/openapi/v1.json
+Accept: application/json

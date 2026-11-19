@@ -1,0 +1,24 @@
+name: ecommerce-api-catalog
+
+services:
+  postgres:
+    image: postgres:17.12-alpine3.24
+    container_name: ecommerce-postgres-catalog
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ecommerce_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the environment or .env file}
+    ports:
+      - "${POSTGRES_PORT:-55433}:5432"
+    volumes:
+      - ecommerce_api_catalog_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  ecommerce_api_catalog_postgres_data:
